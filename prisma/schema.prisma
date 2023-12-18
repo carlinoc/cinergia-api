@@ -1,0 +1,236 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model agerates {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name       String    @db.VarChar(255)
+  range      String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  movies     movies[]
+}
+
+model caption_movie {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  caption_id BigInt    @db.UnsignedBigInt
+  movie_id   BigInt    @db.UnsignedBigInt
+  file       String?   @db.VarChar(500)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  captions   captions  @relation(fields: [caption_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "caption_movie_caption_id_foreign")
+  movies     movies    @relation(fields: [movie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "caption_movie_movie_id_foreign")
+
+  @@index([caption_id], map: "caption_movie_caption_id_foreign")
+  @@index([movie_id], map: "caption_movie_movie_id_foreign")
+}
+
+model captions {
+  id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  name          String          @db.VarChar(255)
+  code          String?         @db.VarChar(2)
+  created_at    DateTime?       @db.Timestamp(0)
+  updated_at    DateTime?       @db.Timestamp(0)
+  caption_movie caption_movie[]
+}
+
+model categories {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name       String    @db.VarChar(255)
+  slug       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  movies     movies[]
+}
+
+model countries {
+  id         BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
+  code       String      @db.VarChar(2)
+  name       String      @db.VarChar(255)
+  created_at DateTime?   @db.Timestamp(0)
+  updated_at DateTime?   @db.Timestamp(0)
+  directors  directors[]
+  movies     movies[]
+}
+
+model directors {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  countryId  BigInt    @db.UnsignedBigInt
+  firstName  String    @db.VarChar(255)
+  lastName   String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  countries  countries @relation(fields: [countryId], references: [id], map: "directors_countryid_foreign")
+  movies     movies[]
+
+  @@index([countryId], map: "directors_countryid_foreign")
+}
+
+model failed_jobs {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
+  connection String   @db.Text
+  queue      String   @db.Text
+  payload    String   @db.LongText
+  exception  String   @db.LongText
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+model featureds {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  movieId    BigInt    @db.UnsignedBigInt
+  isfree     Boolean   @default(false)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  movies     movies    @relation(fields: [movieId], references: [id], map: "featureds_movieid_foreign")
+
+  @@index([movieId], map: "featureds_movieid_foreign")
+}
+
+model freeshorts {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  movieId    BigInt    @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  movies     movies    @relation(fields: [movieId], references: [id], map: "freeshorts_movieid_foreign")
+
+  @@index([movieId], map: "freeshorts_movieid_foreign")
+}
+
+model genre_movie {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  genre_id   BigInt    @db.UnsignedBigInt
+  movie_id   BigInt    @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  genres     genres    @relation(fields: [genre_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "genre_movie_genre_id_foreign")
+  movies     movies    @relation(fields: [movie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "genre_movie_movie_id_foreign")
+
+  @@index([genre_id], map: "genre_movie_genre_id_foreign")
+  @@index([movie_id], map: "genre_movie_movie_id_foreign")
+}
+
+model genres {
+  id          BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String        @db.VarChar(255)
+  slug        String        @db.VarChar(255)
+  created_at  DateTime?     @db.Timestamp(0)
+  updated_at  DateTime?     @db.Timestamp(0)
+  genre_movie genre_movie[]
+}
+
+model languages {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  movies     movies[]
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+model movie_package {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  package_id BigInt    @db.UnsignedBigInt
+  movie_id   BigInt    @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  movies     movies    @relation(fields: [movie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "movie_package_movie_id_foreign")
+  packages   packages  @relation(fields: [package_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "movie_package_package_id_foreign")
+
+  @@index([movie_id], map: "movie_package_movie_id_foreign")
+  @@index([package_id], map: "movie_package_package_id_foreign")
+}
+
+model movies {
+  id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  countryId     BigInt          @default(176) @db.UnsignedBigInt
+  categoryId    BigInt          @db.UnsignedBigInt
+  languageId    BigInt          @db.UnsignedBigInt
+  directorId    BigInt          @db.UnsignedBigInt
+  ageRateId     BigInt          @db.UnsignedBigInt
+  name          String          @db.VarChar(500)
+  slug          String          @db.VarChar(500)
+  description   String?         @db.Text
+  whySee        String?         @db.Text
+  movieLength   Int             @default(0)
+  rating        Int             @default(0)
+  releaseYear   DateTime?       @db.DateTime(0)
+  price         Decimal         @default(0.00) @db.Decimal(8, 2)
+  trailer       String?         @db.VarChar(255)
+  urlId         String?         @db.VarChar(255)
+  image1        String?         @db.VarChar(500)
+  image2        String?         @db.VarChar(500)
+  image3        String?         @db.VarChar(500)
+  created_at    DateTime?       @db.Timestamp(0)
+  updated_at    DateTime?       @db.Timestamp(0)
+  caption_movie caption_movie[]
+  featureds     featureds[]
+  freeshorts    freeshorts[]
+  genre_movie   genre_movie[]
+  movie_package movie_package[]
+  agerates      agerates        @relation(fields: [ageRateId], references: [id], map: "movies_agerateid_foreign")
+  categories    categories      @relation(fields: [categoryId], references: [id], map: "movies_categoryid_foreign")
+  countries     countries       @relation(fields: [countryId], references: [id], map: "movies_countryid_foreign")
+  directors     directors       @relation(fields: [directorId], references: [id], map: "movies_directorid_foreign")
+  languages     languages       @relation(fields: [languageId], references: [id], map: "movies_languageid_foreign")
+
+  @@index([ageRateId], map: "movies_agerateid_foreign")
+  @@index([categoryId], map: "movies_categoryid_foreign")
+  @@index([countryId], map: "movies_countryid_foreign")
+  @@index([directorId], map: "movies_directorid_foreign")
+  @@index([languageId], map: "movies_languageid_foreign")
+}
+
+model packages {
+  id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  slogan        String          @db.VarChar(500)
+  description   String?         @db.Text
+  background    String?         @db.VarChar(500)
+  state         Boolean         @default(false)
+  slug          String          @db.VarChar(500)
+  created_at    DateTime?       @db.Timestamp(0)
+  updated_at    DateTime?       @db.Timestamp(0)
+  movie_package movie_package[]
+}
+
+model password_reset_tokens {
+  email      String    @id @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+}
+
+model personal_access_tokens {
+  id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  tokenable_type String    @db.VarChar(255)
+  tokenable_id   BigInt    @db.UnsignedBigInt
+  name           String    @db.VarChar(255)
+  token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
+  abilities      String?   @db.Text
+  last_used_at   DateTime? @db.Timestamp(0)
+  expires_at     DateTime? @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+
+  @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
+}
+
+model users {
+  id                BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name              String    @db.VarChar(255)
+  email             String    @unique(map: "users_email_unique") @db.VarChar(255)
+  email_verified_at DateTime? @db.Timestamp(0)
+  password          String    @db.VarChar(255)
+  remember_token    String?   @db.VarChar(100)
+  created_at        DateTime? @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+}

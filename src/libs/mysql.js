@@ -4,8 +4,8 @@ export const conn = mysql({
     config: {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: 'Ry1c1@89l',
         port: 3306,
-        database: 'erisdb'
+        database: 'cinergiadb'
     }
 })

@@ -40,12 +40,13 @@ model captions {
 }
 
 model categories {
-  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
-  name       String    @db.VarChar(255)
-  slug       String    @db.VarChar(255)
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
-  movies     movies[]
+  id          BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String    @db.VarChar(255)
+  slug        String    @db.VarChar(255)
+  description String?   @db.Text
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  movies      movies[]
 }
 
 model countries {
@@ -119,6 +120,7 @@ model genres {
   id          BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
   name        String        @db.VarChar(255)
   slug        String        @db.VarChar(255)
+  description String?       @db.Text
   created_at  DateTime?     @db.Timestamp(0)
   updated_at  DateTime?     @db.Timestamp(0)
   genre_movie genre_movie[]
@@ -152,38 +154,39 @@ model movie_package {
 }
 
 model movies {
-  id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
-  countryId     BigInt          @default(176) @db.UnsignedBigInt
-  categoryId    BigInt          @db.UnsignedBigInt
-  languageId    BigInt          @db.UnsignedBigInt
-  directorId    BigInt          @db.UnsignedBigInt
-  ageRateId     BigInt          @db.UnsignedBigInt
-  name          String          @db.VarChar(500)
-  slug          String          @db.VarChar(500)
-  description   String?         @db.Text
-  whySee        String?         @db.Text
-  movieLength   Int             @default(0)
-  rating        Int             @default(0)
-  releaseYear   DateTime?       @db.DateTime(0)
-  price         Decimal         @default(0.00) @db.Decimal(8, 2)
-  trailer       String?         @db.VarChar(255)
-  urlId         String?         @db.VarChar(255)
-  image1        String?         @db.VarChar(500)
-  image2        String?         @db.VarChar(500)
-  poster1       String?         @db.VarChar(500)
-  poster2       String?         @db.VarChar(500)
-  created_at    DateTime?       @db.Timestamp(0)
-  updated_at    DateTime?       @db.Timestamp(0)
-  caption_movie caption_movie[]
-  featureds     featureds[]
-  freeshorts    freeshorts[]
-  genre_movie   genre_movie[]
-  movie_package movie_package[]
-  agerates      agerates        @relation(fields: [ageRateId], references: [id], map: "movies_agerateid_foreign")
-  categories    categories      @relation(fields: [categoryId], references: [id], map: "movies_categoryid_foreign")
-  countries     countries       @relation(fields: [countryId], references: [id], map: "movies_countryid_foreign")
-  directors     directors       @relation(fields: [directorId], references: [id], map: "movies_directorid_foreign")
-  languages     languages       @relation(fields: [languageId], references: [id], map: "movies_languageid_foreign")
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  countryId          BigInt               @default(176) @db.UnsignedBigInt
+  categoryId         BigInt               @db.UnsignedBigInt
+  languageId         BigInt               @db.UnsignedBigInt
+  directorId         BigInt               @db.UnsignedBigInt
+  ageRateId          BigInt               @db.UnsignedBigInt
+  name               String               @db.VarChar(500)
+  slug               String               @unique(map: "slug") @db.VarChar(500)
+  description        String?              @db.Text
+  whySee             String?              @db.Text
+  movieLength        Int                  @default(0)
+  rating             Int                  @default(0)
+  releaseYear        DateTime?            @db.DateTime(0)
+  price              Decimal              @default(0.00) @db.Decimal(8, 2)
+  trailer            String?              @db.VarChar(255)
+  urlId              String?              @db.VarChar(255)
+  image1             String?              @db.VarChar(500)
+  image2             String?              @db.VarChar(500)
+  poster1            String?              @db.VarChar(500)
+  poster2            String?              @db.VarChar(500)
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  caption_movie      caption_movie[]
+  featureds          featureds[]
+  freeshorts         freeshorts[]
+  genre_movie        genre_movie[]
+  home_section_movie home_section_movie[]
+  movie_package      movie_package[]
+  agerates           agerates             @relation(fields: [ageRateId], references: [id], map: "movies_agerateid_foreign")
+  categories         categories           @relation(fields: [categoryId], references: [id], map: "movies_categoryid_foreign")
+  countries          countries            @relation(fields: [countryId], references: [id], map: "movies_countryid_foreign")
+  directors          directors            @relation(fields: [directorId], references: [id], map: "movies_directorid_foreign")
+  languages          languages            @relation(fields: [languageId], references: [id], map: "movies_languageid_foreign")
 
   @@index([ageRateId], map: "movies_agerateid_foreign")
   @@index([categoryId], map: "movies_categoryid_foreign")
@@ -234,4 +237,40 @@ model users {
   remember_token    String?   @db.VarChar(100)
   created_at        DateTime? @db.Timestamp(0)
   updated_at        DateTime? @db.Timestamp(0)
+}
+
+model home_section {
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  sectionId          BigInt               @db.UnsignedBigInt
+  title              String?              @db.VarChar(255)
+  background         String?              @db.VarChar(500)
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  sections           sections             @relation(fields: [sectionId], references: [id], map: "home_section_sectionid_foreign")
+  home_section_movie home_section_movie[]
+
+  @@index([sectionId], map: "home_section_sectionid_foreign")
+}
+
+model home_section_movie {
+  id              BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  home_section_id BigInt       @db.UnsignedBigInt
+  movie_id        BigInt       @db.UnsignedBigInt
+  created_at      DateTime?    @db.Timestamp(0)
+  updated_at      DateTime?    @db.Timestamp(0)
+  home_section    home_section @relation(fields: [home_section_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "home_section_movie_home_section_id_foreign")
+  movies          movies       @relation(fields: [movie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "home_section_movie_movie_id_foreign")
+
+  @@index([home_section_id], map: "home_section_movie_home_section_id_foreign")
+  @@index([movie_id], map: "home_section_movie_movie_id_foreign")
+}
+
+model sections {
+  id           BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  name         String         @db.VarChar(255)
+  slug         String         @unique(map: "slug") @db.VarChar(255)
+  maxMovies    Int            @default(0)
+  created_at   DateTime?      @db.Timestamp(0)
+  updated_at   DateTime?      @db.Timestamp(0)
+  home_section home_section[]
 }

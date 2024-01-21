@@ -8,10 +8,24 @@ export async function GET(request, {params}) {
         const limit = top ? top : config.maxLimit
         const genre = params.genre
         
-        const result = await prisma.$queryRaw`SELECT m.id, m.name, m.slug, m.releaseYear, m.image1, m.image2 FROM movies m
-        JOIN genre_movie gm ON m.id = gm.movie_id
-        JOIN genres g ON gm.genre_id = g.id
-        WHERE g.slug = ${genre} ORDER BY m.created_at DESC Limit ${limit}`
+        const result = await prisma.genres.findMany({
+            where: {
+                slug: String(genre),
+            },
+            select: {
+                id:true,
+                name:true,
+                slug:true,
+                description: true,
+                genre_movie: {
+                    select: {
+                        movies:{
+                            select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true}
+                        }
+                    }
+                }
+            }
+        });
         
         return NextResponse.json({data: result}, {status: 200});       
     }catch (error) {

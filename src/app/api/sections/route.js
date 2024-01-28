@@ -2,17 +2,6 @@ import { NextResponse } from "next/server";
 import prisma from "@/libs/prisma";
 
 export async function GET() {
-    try{
-        const result = await prisma.sections.findMany();
-        return NextResponse.json({data: result}, {status: 200});       
-    }catch (error) {
-        return NextResponse.json(
-            {
-                message: error.message,
-            },
-            {
-                status: 500,
-            }
-        );
-    }
+    const result = await prisma.sections.findMany();
+    return NextResponse.json({data: result}, {status: 200});       
 }

@@ -19,15 +19,26 @@ export async function GET(request, {params}) {
                 description: true,
                 genre_movie: {
                     select: {
+                        id:true,
                         movies:{
                             select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true}
                         }
-                    }
+                    },
+                    orderBy: {
+                        id: 'desc',
+                    },
                 }
             }
         });
+
+        const resultmap = result.map((res) => ({
+            id: res.id,
+            name: res.name,
+            description: res.description,
+            movies: getMovies(res.genre_movie)
+        }));
         
-        return NextResponse.json({data: result}, {status: 200});       
+        return NextResponse.json({data: resultmap}, {status: 200});       
     }catch (error) {
         return NextResponse.json(
             {
@@ -38,4 +49,12 @@ export async function GET(request, {params}) {
             }
         );
     }
+}
+
+function getMovies(array) {
+    const movies = []; 
+    for (var i = 0; i < array.length; i++) {
+        movies.push(array[i].movies)
+    }
+    return movies;
 }

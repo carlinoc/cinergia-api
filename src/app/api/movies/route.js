@@ -7,8 +7,9 @@ export async function GET(request) {
         const top = request.nextUrl.searchParams.get("top")
         const limit = top ? top : config.maxLimit
         
-        const result = await prisma.$queryRaw`SELECT m.id, m.name, m.slug, m.releaseYear, m.image1, m.image2 
+        const result = await prisma.$queryRaw`SELECT m.id, m.name, m.slug, m.releaseYear, m.movieLength AS duration, c.name as category, m.description, m.image1, m.image2 
         FROM movies m
+        JOIN categories c ON c.id = m.categoryId
         ORDER BY m.created_at DESC LIMIT ${limit}`
 
         return NextResponse.json({data: result}, {status: 200});       

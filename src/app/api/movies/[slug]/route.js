@@ -5,7 +5,7 @@ export async function GET(request, {params}) {
     try{
         const slugId = params.slug;
 
-        const result = await prisma.movies.findFirst({
+        const result = await prisma.movies.findMany({
             where: {
                 slug: String(slugId),
             },
@@ -19,8 +19,10 @@ export async function GET(request, {params}) {
                 price: true,
                 trailer: true,
                 urlId: true,
+                releaseYear: true,
                 image1: true,
                 image2: true,
+                created_at: true,
                 languages:{
                     select: {id:true, name:true}    
                 },
@@ -36,11 +38,33 @@ export async function GET(request, {params}) {
                             select: {id:true, name:true}
                         }
                     },    
-                }
+                },
+                categories: true
               }
         }); 
+
+        const resultmap = result.map((res) => ({
+            id: res.id,
+            name: res.name,
+            slug: res.slug,
+            whySee: res.whySee,
+            release_year: res.releaseYear,
+            description: res.description,
+            duration: res.movieLength,
+            price: res.price,
+            trailer: res.trailer,
+            urlId: res.urlId,
+            image1: res.image1,
+            image2: res.image2,
+            created_at: res.created_at,
+            category: res.categories.name,
+            languages: [res.languages],
+            agerates: [res.agerates],
+            director: [res.directors],
+            genres: getGenres(res.genre_movie),
+        }));
         
-        return NextResponse.json({data: result}, {status: 200});               
+        return NextResponse.json({data: resultmap}, {status: 200});               
     }catch (error) {
         return NextResponse.json(
             {
@@ -52,3 +76,71 @@ export async function GET(request, {params}) {
         );
     }
 }
+
+function getGenres(array) {
+    const genres = []; 
+    for (var i = 0; i < array.length; i++) {
+        genres.push(array[i].genres.name)
+    }
+    return genres;
+}
+
+
+// export async function GET(request, {params}) {
+//     try{
+//         const slugId = params.slug;
+
+//         const result = await prisma.movies.findMany({
+//             where: {
+//                 slug: String(slugId),
+//             },
+//             select: {
+//                 id: true,
+//                 name: true,
+//                 slug: true,
+//                 description: true,
+//                 whySee: true,
+//                 movieLength: true,
+//                 price: true,
+//                 trailer: true,
+//                 urlId: true,
+//                 image1: true,
+//                 image2: true,
+//                 languages:{
+//                     select: {id:true, name:true}    
+//                 },
+//                 agerates: {
+//                     select: {id:true, name:true, range: true}
+//                 },
+//                 directors: {
+//                     select: {id:true, firstName:true, lastName: true},
+//                 },
+//                 genre_movie: {
+//                     select: {
+//                         genres: {
+//                             select: {id:true, name:true}
+//                         }
+//                     },    
+//                 }
+//               }
+//         }); 
+
+//         const resultmap = result.map((res) => ({
+//             ...res,
+//             agerates: [res.agerates],
+//             director: [res.directors],
+//             genres: getGenres(res.genre_movie),
+//         }));
+        
+//         return NextResponse.json({data: resultmap}, {status: 200});               
+//     }catch (error) {
+//         return NextResponse.json(
+//             {
+//                 message: error.message,
+//             },
+//             {
+//                 status: 500,
+//             }
+//         );
+//     }
+// }

@@ -25,8 +25,14 @@ export async function GET(request, {params}) {
                 }
             }
         });
+
+        const resultmap = result.map((res) => ({
+            title: res.home_section[0].title,
+            background: res.home_section[0].background,
+            movies: getMovies(res.home_section[0].home_section_movie)
+        }));
                 
-        return NextResponse.json({data: result}, {status: 200});       
+        return NextResponse.json({data: resultmap}, {status: 200});       
     }catch (error) {
         return NextResponse.json(
             {
@@ -37,4 +43,12 @@ export async function GET(request, {params}) {
             }
         );
     }
+}
+
+function getMovies(array) {
+    const movies = []; 
+    for (var i = 0; i < array.length; i++) {
+        movies.push(array[i].movies)
+    }
+    return movies;
 }

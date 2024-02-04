@@ -35,6 +35,7 @@ export async function GET(request, {params}) {
             id: res.id,
             name: res.name,
             description: res.description,
+            background: null,
             movies: getMovies(res.genre_movie)
         }));
         

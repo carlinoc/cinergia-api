@@ -12,6 +12,7 @@ export async function GET(request, {params}) {
             select: {
                 home_section: {
                     select: {
+                        id: true,
                         title: true,
                         background: true,
                         home_section_movie: {
@@ -27,7 +28,9 @@ export async function GET(request, {params}) {
         });
 
         const resultmap = result.map((res) => ({
-            title: res.home_section[0].title,
+            id: res.home_section[0].id,
+            name: res.home_section[0].title,
+            description: null,
             background: res.home_section[0].background,
             movies: getMovies(res.home_section[0].home_section_movie)
         }));

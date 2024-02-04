@@ -3,23 +3,22 @@ import prisma from "@/libs/prisma";
 
 
 export async function POST(request) {
-    const {movieId, buyerId, culqiId, price} = await request.json();
-        const tokenId = generate_token(32);
+    const {movieId, buyerId, transactionId, price} = await request.json();
+    const tokenId = generate_token(32);
 
-        const rented = await prisma.movie_rented.create({
-            data: {
-              movieId: movieId,
-              buyerId: buyerId,
-              culqiId: culqiId,
-              price: price,
-              token: tokenId 
-            },
-        })
+    const rented = await prisma.movie_rented.create({
+        data: {
+          movieId: movieId,
+          buyerId: buyerId,
+          transactionId: transactionId,
+          price: price,
+          token: tokenId 
+        },
+    })
 
-        const id = rented.id;
-        const token = rented.token;
-
-        return NextResponse.json({data:{'id':id, 'token':token}}, {status: 200});       
+    const id = rented.id;
+    
+    return NextResponse.json({'id':id, 'token':tokenId}, {status: 200});        
 }
 
 function generate_token(length){

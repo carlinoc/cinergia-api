@@ -177,6 +177,7 @@ model movies {
   created_at         DateTime?            @db.Timestamp(0)
   updated_at         DateTime?            @db.Timestamp(0)
   caption_movie      caption_movie[]
+  client_movie       client_movie[]
   featureds          featureds[]
   freeshorts         freeshorts[]
   genre_movie        genre_movie[]
@@ -291,4 +292,30 @@ model movie_rented {
   movies        movies   @relation(fields: [movieId], references: [id], map: "movie_rented_movieid_foreign")
 
   @@index([movieId], map: "movie_rented_movieid_foreign")
+}
+
+model client_movie {
+  id            BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  client_id     BigInt   @db.UnsignedBigInt
+  movie_id      BigInt   @db.UnsignedBigInt
+  transactionId String   @db.VarChar(255)
+  amount        Decimal  @default(0.00) @db.Decimal(8, 2)
+  date_start    DateTime @db.DateTime(0)
+  date_end      DateTime @db.DateTime(0)
+  clients       clients  @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "client_movie_client_id_foreign")
+  movies        movies   @relation(fields: [movie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "client_movie_movie_id_foreign")
+
+  @@index([client_id], map: "client_movie_client_id_foreign")
+  @@index([movie_id], map: "client_movie_movie_id_foreign")
+}
+
+model clients {
+  id           BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  name         String         @db.VarChar(255)
+  email        String         @unique(map: "email") @db.VarChar(255)
+  image        String?        @db.VarChar(500)
+  active       Boolean        @default(true)
+  created_at   DateTime?      @db.Timestamp(0)
+  updated_at   DateTime?      @db.Timestamp(0)
+  client_movie client_movie[]
 }

@@ -1,6 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/prisma";
 
+export async function POST(request) {
+    try{
+        const {name, email, image} = await request.json();
+
+        const client = await prisma.clients.create({
+            data: {
+            name: name,
+            email: email,
+            image: image
+            },
+        })
+
+        const id = client.id;
+        
+        return NextResponse.json({'id':id, 'code': 1}, {status: 200});        
+    }catch (error) {
+        return NextResponse.json(
+            {
+                message: error.message,
+                code: 0,
+            },
+            {
+                status: 500,
+            }
+        );
+    }
+}
+
 export async function GET(request) {
     try{
         const email = request.nextUrl.searchParams.get("email")

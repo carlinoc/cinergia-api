@@ -168,6 +168,7 @@ model movies {
   rating             Int                  @default(0)
   releaseYear        DateTime?            @db.DateTime(0)
   price              Decimal              @default(0.00) @db.Decimal(8, 2)
+  payment_type       String?              @db.VarChar(2)
   trailer            String?              @db.VarChar(255)
   urlId              String?              @db.VarChar(255)
   image1             String?              @db.VarChar(500)
@@ -305,7 +306,7 @@ model client_movie {
   clients       clients  @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "client_movie_client_id_foreign")
   movies        movies   @relation(fields: [movie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "client_movie_movie_id_foreign")
 
-  @@index([client_id], map: "client_movie_client_id_foreign")
+  @@unique([client_id, movie_id], map: "client_id")
   @@index([movie_id], map: "client_movie_movie_id_foreign")
 }
 
@@ -315,7 +316,7 @@ model clients {
   email        String         @unique(map: "email") @db.VarChar(255)
   image        String?        @db.VarChar(500)
   active       Boolean        @default(true)
-  created_at   DateTime?      @db.Timestamp(0)
-  updated_at   DateTime?      @db.Timestamp(0)
+  created_at   DateTime?      @default(now()) @db.Timestamp(0)
+  updated_at   DateTime?      @default(now()) @db.Timestamp(0)
   client_movie client_movie[]
 }

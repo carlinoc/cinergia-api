@@ -312,10 +312,12 @@ model client_movie {
 
 model clients {
   id           BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  auth_id      String?        @unique(map: "auth_id") @db.VarChar(255)
   name         String         @db.VarChar(255)
   email        String         @unique(map: "email") @db.VarChar(255)
   image        String?        @db.VarChar(500)
   active       Boolean        @default(true)
+  auth_type    String?        @db.VarChar(2)
   created_at   DateTime?      @default(now()) @db.Timestamp(0)
   updated_at   DateTime?      @default(now()) @db.Timestamp(0)
   client_movie client_movie[]

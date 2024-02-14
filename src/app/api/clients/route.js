@@ -3,13 +3,14 @@ import prisma from "@/libs/prisma";
 
 export async function POST(request) {
     try{
-        const {name, email, image} = await request.json();
+        const {auth_id, name, email, image} = await request.json();
 
         const client = await prisma.clients.create({
             data: {
-            name: name,
-            email: email,
-            image: image
+                auth_id: auth_id,
+                name: name,
+                email: email,
+                image: image
             },
         })
 
@@ -40,6 +41,7 @@ export async function GET(request) {
             },
             select: {
                 id:true,
+                auth_id:true,
                 name:true,
                 email:true,
                 image:true,
@@ -60,8 +62,10 @@ export async function GET(request) {
 
         const resultmap = result.map((res) => ({
             id: res.id,
+            auth_id: res.auth_id,
             name: res.name,
             email: res.email,
+            image: res.image,
             created_at: res.created_at,
             movies: getMovies(res.client_movie)
         }));

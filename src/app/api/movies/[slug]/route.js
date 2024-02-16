@@ -52,7 +52,7 @@ export async function GET(request, {params}) {
             release_year: res.releaseYear,
             description: res.description,
             duration: res.movieLength,
-            price: res.price,
+            price: getPrice(res.price),
             payment_type: res.payment_type,
             trailer: res.trailer,
             urlId: res.urlId,
@@ -87,62 +87,7 @@ function getGenres(array) {
     return genres;
 }
 
-
-// export async function GET(request, {params}) {
-//     try{
-//         const slugId = params.slug;
-
-//         const result = await prisma.movies.findMany({
-//             where: {
-//                 slug: String(slugId),
-//             },
-//             select: {
-//                 id: true,
-//                 name: true,
-//                 slug: true,
-//                 description: true,
-//                 whySee: true,
-//                 movieLength: true,
-//                 price: true,
-//                 trailer: true,
-//                 urlId: true,
-//                 image1: true,
-//                 image2: true,
-//                 languages:{
-//                     select: {id:true, name:true}    
-//                 },
-//                 agerates: {
-//                     select: {id:true, name:true, range: true}
-//                 },
-//                 directors: {
-//                     select: {id:true, firstName:true, lastName: true},
-//                 },
-//                 genre_movie: {
-//                     select: {
-//                         genres: {
-//                             select: {id:true, name:true}
-//                         }
-//                     },    
-//                 }
-//               }
-//         }); 
-
-//         const resultmap = result.map((res) => ({
-//             ...res,
-//             agerates: [res.agerates],
-//             director: [res.directors],
-//             genres: getGenres(res.genre_movie),
-//         }));
-        
-//         return NextResponse.json({data: resultmap}, {status: 200});               
-//     }catch (error) {
-//         return NextResponse.json(
-//             {
-//                 message: error.message,
-//             },
-//             {
-//                 status: 500,
-//             }
-//         );
-//     }
-// }
+function getPrice(price) {
+    var _price = parseFloat(price).toFixed(2);
+    return _price;
+}

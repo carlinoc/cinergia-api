@@ -33,7 +33,8 @@ export async function POST(request) {
 export async function GET(request) {
     try{
         const email = request.nextUrl.searchParams.get("email")
-        
+        const currentDate = new Date();
+
         const result = await prisma.clients.findMany({
             where: {
                 email: String(email),
@@ -47,6 +48,11 @@ export async function GET(request) {
                 image:true,
                 created_at:true,
                 client_movie: {
+                    where:{
+                        date_end: {
+                            gt: currentDate
+                        }    
+                    },
                     select: {
                         id: true,
                         transactionId: true,

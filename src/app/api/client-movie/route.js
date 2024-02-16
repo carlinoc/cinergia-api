@@ -17,7 +17,7 @@ export async function POST(request) {
         });
         if(row == 0) {
             const startDate = new Date();
-            const endDate = addHours(new Date(), 72);
+            const endDate = addHours(new Date(), 77);
 
             const client_movie = await prisma.client_movie.create({
                 data: {

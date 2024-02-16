@@ -1,24 +1,13 @@
 import { NextResponse } from "next/server";
+import prisma from "@/libs/prisma";
 
 export async function GET() {
 
-    // const result = await prisma.movies.findMany({
-        //     include: {
-        //         genre_movie: {
-        //             include: {genres: true}
-        //         }
-        //     },
-        // });
+    const result = await prisma.movies.findMany({
+        where: {
+            id: 18,
+        },
+    })
 
-        // const result = await prisma.movies.findMany({
-        //     include: {
-        //         genre_movie: {
-        //             select: {
-        //                 genre_id: true,
-        //             },
-        //         },
-        //     },
-        // });
-
-    return NextResponse.json({message: "Hello World1"});
+    return NextResponse.json({data: result}, {status: 200});               
 }

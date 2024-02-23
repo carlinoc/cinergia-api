@@ -23,6 +23,8 @@ export async function GET(request, {params}) {
                 releaseYear: true,
                 image1: true,
                 image2: true,
+                poster1: true,
+                poster2: true,
                 created_at: true,
                 languages:{
                     select: {id:true, name:true}    
@@ -58,6 +60,8 @@ export async function GET(request, {params}) {
             urlId: res.urlId,
             image1: res.image1,
             image2: res.image2,
+            poster1: res.poster1,
+            poster2: res.poster2,
             created_at: res.created_at,
             category: res.categories.name,
             languages: [res.languages],

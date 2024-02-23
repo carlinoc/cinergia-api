@@ -21,7 +21,7 @@ export async function GET(request, {params}) {
                     select: {
                         id:true,
                         movies:{
-                            select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true}
+                            select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true, poster1:true, poster2:true}
                         }
                     },
                     orderBy: {

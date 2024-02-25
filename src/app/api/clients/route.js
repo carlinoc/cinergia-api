@@ -59,7 +59,7 @@ export async function GET(request) {
                         date_start: true,
                         date_end: true,
                         movies:{
-                            select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true}
+                            select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true, poster1:true, poster2:true}
                         }
                     }
                 },
@@ -98,11 +98,13 @@ function getMovies(array) {
         const releaseYear = array[i].movies.releaseYear;
         const image1 = array[i].movies.image1;
         const image2 = array[i].movies.image2;
+        const poster1 = array[i].movies.poster1;
+        const poster2 = array[i].movies.poster2;
         const transactionId = array[i].transactionId;
         const date_start = array[i].date_start;
         const date_end = array[i].date_end;
 
-        movies.push({id:id, name:name, slug:slug, releaseYear:releaseYear, image1:image1, image2:image2, transactionId: transactionId, date_start:date_start, date_end:date_end});
+        movies.push({id:id, name:name, slug:slug, releaseYear:releaseYear, image1:image1, image2:image2, poster1:poster1, poster2:poster2, transactionId: transactionId, date_start:date_start, date_end:date_end});
     }
     return movies;
 }

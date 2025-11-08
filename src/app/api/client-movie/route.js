@@ -3,7 +3,7 @@ import prisma from "@/libs/prisma";
 
 export async function POST(request) {
     try{
-        const {clientId, movieId, transactionId, amount} = await request.json();
+        const {clientId, movieId, transactionId, amount, yapeNumber, amountUSD, countryCode} = await request.json();
 
         const currentDate = new Date();
         const row = await prisma.client_movie.count({
@@ -25,6 +25,9 @@ export async function POST(request) {
                     movie_id: movieId,
                     transactionId: transactionId,
                     amount: amount,
+                    yapeNumber: yapeNumber,
+                    amountUSD: amountUSD,
+                    countryCode: countryCode,
                     date_start: startDate,
                     date_end: endDate
                 },

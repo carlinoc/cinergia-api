@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/prisma";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://cdn.cinergia.lat";
+
 export async function POST(request) {
     try{
         const {auth_id, name, email, image, countryCode} = await request.json();
@@ -62,7 +64,10 @@ export async function GET(request) {
                         movies:{
                             select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true, poster1:true, poster2:true}
                         }
-                    }
+                    },
+                    orderBy: {
+                        id: 'desc',
+                    },
                 },
             }
         });
@@ -91,21 +96,23 @@ export async function GET(request) {
 }
 
 function getMovies(array) {
-    const movies = []; 
-    for (var i = 0; i < array.length; i++) {
-        const id = array[i].movies.id;
-        const name = array[i].movies.name;
-        const slug = array[i].movies.slug;
-        const releaseYear = array[i].movies.releaseYear;
-        const image1 = array[i].movies.image1;
-        const image2 = array[i].movies.image2;
-        const poster1 = array[i].movies.poster1;
-        const poster2 = array[i].movies.poster2;
-        const transactionId = array[i].transactionId;
-        const date_start = array[i].date_start;
-        const date_end = array[i].date_end;
+    return array.map((item) => {        
+        const movie = item.movies;
+        
+        return {
+            ...movie,
+            image1: normalizeImage(movie.image1),
+            image2: normalizeImage(movie.image2),
+            poster1: normalizeImage(movie.poster1),
+            poster2: normalizeImage(movie.poster2),
+        };
+    });
+}
 
-        movies.push({id:id, name:name, slug:slug, releaseYear:releaseYear, image1:image1, image2:image2, poster1:poster1, poster2:poster2, transactionId: transactionId, date_start:date_start, date_end:date_end});
-    }
-    return movies;
+/**
+ * Normaliza una URL de imagen, agregando el CDN si no empieza con http
+ */
+function normalizeImage(path) {
+    if (!path) return null;
+    return path.startsWith("http") ? path : `${BASE_URL}/${path}`;
 }

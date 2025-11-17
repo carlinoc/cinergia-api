@@ -41,8 +41,6 @@ export async function GET(request, {params}) {
             background: null,
             movies: getMovies(res.genre_movie)
         }));
-
-        console.log(resultmap)
         
         return NextResponse.json({data: resultmap}, {status: 200});       
     }catch (error) {

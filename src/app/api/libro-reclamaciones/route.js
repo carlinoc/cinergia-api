@@ -116,14 +116,8 @@ export async function POST(request) {
 
     // Enviar ambos correos
     try {
-      //await transporter.verify(); // ← prueba SMTP
-      // 1) Enviar correo al usuario
       await transporter.sendMail(mailOptionsUsuario);
-
-      // 2) Esperar 1.2 segundos para no romper el rate limit
-      //await new Promise((resolve) => setTimeout(resolve, 1200));
-
-      // 3) Enviar correo a la empresa
+      
       //await transporter.sendMail(mailOptionsEmpresa);
     } catch (emailError) {
       console.error('Error al enviar correos:', emailError);
@@ -352,41 +346,3 @@ function formatFecha(fecha) {
     year: "numeric",
   });
 }
-
-// Endpoint GET para obtener reclamos (opcional)
-// export async function GET(request) {
-//   try {
-//     const { searchParams } = new URL(request.url);
-//     const numeroReclamo = searchParams.get('numero');
-
-//     if (numeroReclamo) {
-//       const reclamo = await prisma.reclamo.findUnique({
-//         where: { numeroReclamo },
-//       });
-
-//       if (!reclamo) {
-//         return NextResponse.json(
-//           { message: 'Reclamo no encontrado' },
-//           { status: 404 }
-//         );
-//       }
-
-//       return NextResponse.json(reclamo);
-//     }
-
-//     // Listar todos los reclamos (agregar paginación en producción)
-//     const reclamos = await prisma.reclamo.findMany({
-//       orderBy: { fechaRegistro: 'desc' },
-//       take: 50,
-//     });
-
-//     return NextResponse.json(reclamos);
-
-//   } catch (error) {
-//     console.error('Error al obtener reclamos:', error);
-//     return NextResponse.json(
-//       { message: 'Error al obtener los reclamos' },
-//       { status: 500 }
-//     );
-//   }
-// }

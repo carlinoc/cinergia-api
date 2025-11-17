@@ -96,17 +96,27 @@ export async function GET(request) {
 }
 
 function getMovies(array) {
-    return array.map((item) => {        
-        const movie = item.movies;
-        
-        return {
-            ...movie,
-            image1: normalizeImage(movie.image1),
-            image2: normalizeImage(movie.image2),
-            poster1: normalizeImage(movie.poster1),
-            poster2: normalizeImage(movie.poster2),
-        };
-    });
+    const movies = [];
+
+    for (let i = 0; i < array.length; i++) {
+        const m = array[i].movies;
+
+        movies.push({
+            id: m.id,
+            name: m.name,
+            slug: m.slug,
+            releaseYear: m.releaseYear,
+            image1: normalizeImage(m.image1),
+            image2: normalizeImage(m.image2),
+            poster1: normalizeImage(m.poster1),
+            poster2: normalizeImage(m.poster2),
+            transactionId: array[i].transactionId,
+            date_start: array[i].date_start,
+            date_end: array[i].date_end,
+        });
+    }
+
+    return movies;
 }
 
 /**

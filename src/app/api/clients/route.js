@@ -111,8 +111,8 @@ function getMovies(array) {
             poster1: normalizeImage(m.poster1),
             poster2: normalizeImage(m.poster2),
             transactionId: array[i].transactionId,
-            date_start: array[i].date_start,
-            date_end: array[i].date_end,
+            date_start: safeDate(array[i].date_start),
+            date_end: safeDate(array[i].date_end),
         });
     }
 
@@ -125,4 +125,10 @@ function getMovies(array) {
 function normalizeImage(path) {
     if (!path) return null;
     return path.startsWith("http") ? path : `${BASE_URL}/${path}`;
+}
+
+function safeDate(d) {
+    if (!d || d === 0 || d === "0") return null;
+    const dt = new Date(d);
+    return isNaN(dt.getTime()) ? null : dt;
 }

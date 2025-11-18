@@ -99,20 +99,20 @@ function getMovies(array) {
     const movies = [];
 
     for (let i = 0; i < array.length; i++) {
-        const m = array[i].movies;
+        const item = array[i];
 
         movies.push({
-            id: m.id,
-            name: m.name,
-            slug: m.slug,
-            releaseYear: m.releaseYear,
-            image1: normalizeImage(m.image1),
-            image2: normalizeImage(m.image2),
-            poster1: normalizeImage(m.poster1),
-            poster2: normalizeImage(m.poster2),
-            transactionId: array[i].transactionId,
-            date_start: safeDate(array[i].date_start),
-            date_end: safeDate(array[i].date_end),
+            id: item.movies.id,
+            name: item.movies.name,
+            slug: item.movies.slug,
+            releaseYear: item.movies.releaseYear,
+            image1: normalizeImage(item.movies.image1),
+            image2: normalizeImage(item.movies.image2),
+            poster1: normalizeImage(item.movies.poster1),
+            poster2: normalizeImage(item.movies.poster2),
+            transactionId: item.transactionId,
+            date_start: safeDate(item.date_start),
+            date_end: safeDate(item.date_end),
         });
     }
 
@@ -128,7 +128,12 @@ function normalizeImage(path) {
 }
 
 function safeDate(d) {
-    if (!d || d === 0 || d === "0") return null;
+     if (!d || d === 0 || d === "0" || d === "0000-00-00" || d === "0000-00-00 00:00:00") {
+        return null;
+    }
     const dt = new Date(d);
-    return isNaN(dt.getTime()) ? null : dt.toISOString();
+    if (isNaN(dt.getTime())) {
+        return null;
+    }
+    return dt.toISOString();
 }

@@ -130,5 +130,5 @@ function normalizeImage(path) {
 function safeDate(d) {
     if (!d || d === 0 || d === "0") return null;
     const dt = new Date(d);
-    return isNaN(dt.getTime()) ? null : dt;
+    return isNaN(dt.getTime()) ? null : dt.toISOString();
 }

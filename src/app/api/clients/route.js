@@ -36,8 +36,7 @@ export async function POST(request) {
 export async function GET(request) {
     try{
         const email = request.nextUrl.searchParams.get("email")
-        const currentDate = new Date();
-
+        
         const result = await prisma.clients.findMany({
             where: {
                 email: String(email),
@@ -51,18 +50,13 @@ export async function GET(request) {
                 image:true,
                 created_at:true,
                 client_movie: {
-                    where:{
-                        date_end: {
-                            gt: currentDate
-                        }    
-                    },
                     select: {
                         id: true,
                         transactionId: true,
                         date_start: true,
                         date_end: true,
                         movies:{
-                            select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true, poster1:true, poster2:true}
+                            select: {id:true, name:true, slug:true, releaseYear:true, image1:true, image2:true, poster1:true, poster2:true, categories:true}
                         }
                     },
                     orderBy: {
@@ -111,6 +105,7 @@ function getMovies(array) {
             poster1: normalizeImage(item.movies.poster1),
             poster2: normalizeImage(item.movies.poster2),
             transactionId: item.transactionId,
+            category: item.movies.categories.name,
             date_start: safeDate(item.date_start),
             date_end: safeDate(item.date_end),
         });
